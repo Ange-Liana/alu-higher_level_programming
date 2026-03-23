@@ -1,11 +1,19 @@
 #!/usr/bin/python3
-class Square:
-    """Defines a square with a private size attribute."""
+"""This module defines a class Square with a private size attribute."""
 
-    def __init__(self, size=0):
-        """Initialize the square with optional size."""
-        if not isinstance(size, int):
-            raise TypeError("size must be an integer")
-        if size < 0:
-            raise ValueError("size must be >= 0")
+
+class Square:
+    """Represents a square with a private instance attribute 'size'.
+
+    The size of a square is crucial for computations such as area.
+    It is kept private to allow controlled access and future validation.
+    """
+
+    def __init__(self, size):
+        """Initialize a new Square instance.
+
+        Args:
+            size (any): The size of the square.
+                        No type or value checks are performed.
+        """
         self.__size = size
