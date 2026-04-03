@@ -1,32 +1,30 @@
 #!/usr/bin/python3
-"""Lists all states with a name starting with N from the database."""
+"""Lists states with names containing lowercase 'n'."""
 
-import MySQLdb
 import sys
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from model_state import Base, State
 
 if __name__ == "__main__":
     username = sys.argv[1]
     password = sys.argv[2]
     database = sys.argv[3]
 
-    db = MySQLdb.connect(
-        host="localhost",
-        port=3306,
-        user=username,
-        passwd=password,
-        db=database
+    engine = create_engine(
+        f"mysql+mysqldb://{username}:{password}@localhost:3306/{database}",
+        pool_pre_ping=True
     )
 
-    cursor = db.cursor()
-    cursor.execute(
-        "SELECT * FROM states WHERE name LIKE 'N%' ORDER BY id ASC"
-    )
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-    rows = cursor.fetchall()
+    states = session.query(State)\
+        .filter(State.name.like('%n%'))\
+        .order_by(State.id)\
+        .all()
 
-    for row in rows:
-        print(row)
+    for state in states:
+        print(f"({state.id}, '{state.name}')")
 
-    cursor.close()
-    db.close()
+    session.close()
