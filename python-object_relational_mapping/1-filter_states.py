@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Lists states with names containing 'n' using MySQLdb."""
+"""Lists states with names containing lowercase 'n'."""
 
 import sys
 import MySQLdb
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     cur = db.cursor()
 
-    # IMPORTANT: filter in SQL, NOT Python
+    # STRICT SQL FILTER (case-sensitive)
     cur.execute(
         "SELECT id, name FROM states "
         "WHERE name LIKE BINARY '%n%' "
