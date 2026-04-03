@@ -1,8 +1,9 @@
 #!/usr/bin/python3
-"""Lists states with names containing lowercase 'n'."""
+"""Lists all states with a name starting with N from the database."""
 
-import sys
 import MySQLdb
+import sys
+
 
 if __name__ == "__main__":
     username = sys.argv[1]
@@ -17,19 +18,15 @@ if __name__ == "__main__":
         db=database
     )
 
-    cur = db.cursor()
-
-    # STRICT SQL FILTER (case-sensitive)
-    cur.execute(
-        "SELECT id, name FROM states "
-        "WHERE name LIKE BINARY '%n%' "
-        "ORDER BY id"
+    cursor = db.cursor()
+    cursor.execute(
+        "SELECT * FROM states WHERE name LIKE 'N%' ORDER BY id ASC"
     )
 
-    rows = cur.fetchall()
+    rows = cursor.fetchall()
 
     for row in rows:
         print(row)
 
-    cur.close()
+    cursor.close()
     db.close()
