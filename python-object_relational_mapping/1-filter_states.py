@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Lists states with names containing lowercase 'n' from database."""
+"""Lists states with names containing 'n' using MySQLdb."""
 
 import sys
 import MySQLdb
@@ -19,13 +19,17 @@ if __name__ == "__main__":
 
     cur = db.cursor()
 
-    cur.execute("SELECT * FROM states ORDER BY id")
+    # IMPORTANT: filter in SQL, NOT Python
+    cur.execute(
+        "SELECT id, name FROM states "
+        "WHERE name LIKE BINARY '%n%' "
+        "ORDER BY id"
+    )
 
     rows = cur.fetchall()
 
     for row in rows:
-        if 'n' in row[1]:
-            print(row)
+        print(row)
 
     cur.close()
     db.close()
