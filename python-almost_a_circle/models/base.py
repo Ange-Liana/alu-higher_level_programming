@@ -1,11 +1,15 @@
 #!/usr/bin/python3
+"""Base class"""
+
 import json
 
 
 class Base:
+    """Base class"""
     __nb_objects = 0
 
     def __init__(self, id=None):
+        """Initialize"""
         if id is not None:
             self.id = id
         else:
@@ -14,36 +18,47 @@ class Base:
 
     @staticmethod
     def to_json_string(list_dictionaries):
+        """Return JSON string"""
         if not list_dictionaries:
             return "[]"
         return json.dumps(list_dictionaries)
 
     @staticmethod
     def from_json_string(json_string):
+        """Return list"""
         if not json_string:
             return []
         return json.loads(json_string)
 
     @classmethod
     def save_to_file(cls, list_objs):
+        """Save to file"""
         filename = cls.__name__ + ".json"
         with open(filename, "w") as f:
-            if not list_objs:
+            if list_objs is None:
                 f.write("[]")
             else:
-                f.write(cls.to_json_string([o.to_dictionary() for o in list_objs]))
-
-    @classmethod
-    def load_from_file(cls):
-        filename = cls.__name__ + ".json"
-        try:
-            with open(filename, "r") as f:
-                return [cls.create(**d) for d in cls.from_json_string(f.read())]
-        except FileNotFoundError:
-            return []
+                list_dicts = [obj.to_dictionary() for obj in list_objs]
+                f.write(cls.to_json_string(list_dicts))
 
     @classmethod
     def create(cls, **dictionary):
-        dummy = cls(1, 1) if cls.__name__ == "Rectangle" else cls(1)
+        """Create instance"""
+        if cls.__name__ == "Rectangle":
+            dummy = cls(1, 1)
+        else:
+            dummy = cls(1)
+
         dummy.update(**dictionary)
         return dummy
+
+    @classmethod
+    def load_from_file(cls):
+        """Load from file"""
+        filename = cls.__name__ + ".json"
+        try:
+            with open(filename, "r") as f:
+                list_dicts = cls.from_json_string(f.read())
+                return [cls.create(**d) for d in list_dicts]
+        except FileNotFoundError:
+            return []
